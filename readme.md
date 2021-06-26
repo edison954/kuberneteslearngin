@@ -10,7 +10,8 @@ minikube instalar
 --------------------------------
 ir a: https://minikube.sigs.k8s.io/docs/start/
 
-minikube start
+minikube status
+minikube starxt
 kubectl get po -A
 minikube kubectl -- get po -A
 minikube dashboard
@@ -43,6 +44,9 @@ minikube start -p aged --kubernetes-version=v1.16.1
 minikube delete --all   --> borrar todo del cluster
 
 
+Releases
+
+https://github.com/kubernetes/minikube/releases
 
 
-
+su - root     --> conectarse como root
