@@ -78,6 +78,10 @@ cd .minikube    -->contiene los componentes necesarios para arrnacar el cluster 
 cd machines      --> aca se contiene un directorio para c/uno de los clusters que haya podido arrancar dentro de la maquina
 
 
+minikube dashboard
+
+
+
 
 
 
