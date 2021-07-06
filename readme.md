@@ -176,7 +176,46 @@ app -> imagen-container  -> deploy
                                                            image: nginx
 
 
-                                                        
+
+Pod: debe ser independiente en recursos ( por lo general unicamente tienen un container, independiente de otros contenedores) 
+
+  --  cuando scala escalan todos los contenedores que esten dentro del pod
+
+
+ - tiene un conjunto de recursos ( direcciones, puertos, hostnames, sockets, memoria, volumenes, etc)
+ 
+ - tiene una ip unica para todo el pod
+
+ - se crean detro de un node del cluster
+
+ - el scheduler determina en que nodo del cluster va a parar un pod (dependiendo disponibilidad y metricas)
+
+ - hay una red privada / virtual network que utilizan todos los pods dentro de k8s
+
+ - no tienen estado no se debe guardar informacion en ellos
+
+
+Crear pod
+-----------------------
+
+
+en ver < 1.17
+
+kubectl run nginx1 --image=nginx
+
+kubectl get pods
+
+kubectl get deployments
+
+kubectl run --generator=run-pod/v1 nginx2 --image=nginx
+
+en ver > 1.18
+
+kubectl run nginx3  --image=nginx
+
+
+
+
 
 
 
