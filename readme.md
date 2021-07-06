@@ -109,7 +109,60 @@ kubectl config current-context   --> ver en que perfil se esta (con kubectl)
 en directorio .minikube/machines se crea automaticamente un directorio por cada perfil que se tenga.
 y en directorio .kube/config en este archivo escribe la configuracion de los clusters y el current
 
+ps -f | grep virtualbox         --> ver maquinas virtuales con virtualbox
 
+minikube profile desarrollo 
+
+minikube stop
+
+
+Borrar un cluster minikube
+-------------------------------
+minikube delete             -->> estando parado sobre el profile  en este caso desarrollo
+
+minikube profile list       --> verificarlo
+
+dentro de .minikube/machines el directorio desarrollo debe desaparecer
+
+
+Docker desktop
+------------------------------
+
+descargar y habilitar.
+
+kubectl cluster-info
+
+muestra la sig info:
+ - Kubernetes control plane is running at https://192.168.64.2:8443
+ - KubeDNS is running at https://192.168.64.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+ - To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+
+ PODs
+ -------------------------------
+ compuestos por contenedores docker.
+
+Ciclo de vida de una app en k8s
+
+app -> imagen-container  -> deploy  
+                                -- con docker ( docker run )
+                                -- con kubernetes
+                                        -- imperativo
+                                                - despliegue directo en un pod (kubectl run)
+                                        -- declarativo
+                                                -  manifiesto yaml 
+                                                        apiversion: v1
+                                                        kind: Prod
+                                                        metadata: 
+                                                         name nginx
+                                                        spec:
+                                                         containers:
+                                                         - name: nginx
+                                                           image: nginx
+
+
+                                                        
 
 
 
