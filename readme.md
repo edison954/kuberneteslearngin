@@ -146,19 +146,33 @@ muestra la sig info:
 Ciclo de vida de una app en k8s
 
 app -> imagen-container  -> deploy  
+
                                 -- con docker ( docker run )
+
                                 -- con kubernetes
+
                                         -- imperativo
+
                                                 - despliegue directo en un pod (kubectl run)
+
                                         -- declarativo
+
                                                 -  manifiesto yaml 
+
                                                         apiversion: v1
+
                                                         kind: Prod
+
                                                         metadata: 
+
                                                          name nginx
+
                                                         spec:
+
                                                          containers:
+
                                                          - name: nginx
+
                                                            image: nginx
 
 
