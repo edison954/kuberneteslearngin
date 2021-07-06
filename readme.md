@@ -80,8 +80,34 @@ cd machines      --> aca se contiene un directorio para c/uno de los clusters qu
 
 minikube dashboard
 
+----
+arrancar minikube con otro container runtime
+--------------------------
+
+minikube start --container-runtime=cri-o
+
+kubectl get nodes
+
+kubectl get nodes -o wide   --> informacion de los nodos con mas detalle
 
 
+Tener mas de un cluster
+-------------------------
+
+minikube start -p desarrollo       --> p de profile
+
+kubectl config use-context minikube         -->cuando estas en otro contexto
+
+minikube profile        --> permete conocer en cual perfil/cluster estamos
+
+minikube profile list
+
+minikube profile desarrollo         -->> cambiarse de perfil
+
+kubectl config current-context   --> ver en que perfil se esta (con kubectl)
+
+en directorio .minikube/machines se crea automaticamente un directorio por cada perfil que se tenga.
+y en directorio .kube/config en este archivo escribe la configuracion de los clusters y el current
 
 
 
