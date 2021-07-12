@@ -11,15 +11,20 @@ minikube instalar
 ir a: https://minikube.sigs.k8s.io/docs/start/
 
 minikube status
+
 minikube starxt
+
 kubectl get po -A
+
 minikube kubectl -- get po -A
+
 minikube dashboard
 
 
 Deploy example
 
 kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4
+
 kubectl expose deployment hello-minikube --type=NodePort --port=8080
 
 kubectl get services hello-minikube
@@ -214,10 +219,23 @@ en ver > 1.18
 kubectl run nginx3  --image=nginx
 
 
+ver las propiedades de un pod:
+
+kubectl get pods
 
 
+kubectl describe pod/nginx1                     tipo y nombre
 
 
+comando exec    
+
+kubectl exec nginx1 ls
+
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. 
+
+Use kubectl exec [POD] -- [COMMAND] instead.
+
+kubectl exec hello-minikube-6ddfcc9757-wknqr -- ls
 
 
 
