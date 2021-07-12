@@ -237,6 +237,81 @@ Use kubectl exec [POD] -- [COMMAND] instead.
 
 kubectl exec hello-minikube-6ddfcc9757-wknqr -- ls
 
+kubectl exec hello-minikube-6ddfcc9757-wknqr -it bash
+
+uname -a
+
+df -f                   comprobar sistema de ficheros
+
+------------
+
+contenedor basado en apache:
+
+kubectl run apache --image=httpd --port=8080 --generator=run-pod/v1
+
+kubectl run apache --image=httpd --port=8080
+
+kubectl logs apache                     --> ver logs del pod apache
+
+kubectl logs -f apache                  --> ver logs y se queda recibiendo mas logs
+
+kubectl get pods
+
+kubectl logs apache --tail=30           --> ver logs las ultimas 30 lineas
+
+kubectl exec apache -it bash
+
+wget localchost
+
+apt-get update                          --> actualizar todos los paquetes (del so) dentro del container
+
+
+
+apt-get install wget
+
+wget localhost                  -->  para ve el apache corriendo.
+
+kubectl proxy                   -- permite probar la app (abre un puerto por el cual se peude preguntar por las caracteristicas del cluster y las apps)
+
+
+http://127.0.0.1:8001/            --> muestra el listado de todas las apis disponibles (por el apiserver)
+
+http://127.0.0.1:8001/version
+
+http://127.0.0.1:8001/healthz          --> indica si el cluster esta ok
+
+http://127.0.0.1:8001/api/v1
+
+http://127.0.0.1:8001/api/v1/namespaces                --> lista de namaspaces
+
+http://127.0.0.1:8001/api/v1/namespaces/default         --> namespace default
+
+http://127.0.0.1:8001/api/v1/namespaces/default/pods
+
+http://127.0.0.1:8001/api/v1/namespaces/default/pods/apache
+
+http://127.0.0.1:8001/api/v1/namespaces/default/pods/apache/proxy/   --> verifaicar el pod
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
