@@ -149,7 +149,7 @@ muestra la sig info:
  compuestos por contenedores docker.
 
 Ciclo de vida de una app en k8s
-
+```
 app -> imagen-container  -> deploy  
 
                                 -- con docker ( docker run )
@@ -180,7 +180,7 @@ app -> imagen-container  -> deploy
 
                                                            image: nginx
 
-
+```
 
 Pod: debe ser independiente en recursos ( por lo general unicamente tienen un container, independiente de otros contenedores) 
 
@@ -367,6 +367,53 @@ números: [uno, dos, tres]
 
 ```
 
+practica1
+
+cd practica1
+
+docker build -t edison954/nginx:v1 .
+
+docker images
+
+docker login
+
+docker push edison954/nginx:v1                  --> con ello ya subimos la imagen al regestry, ahora si podriamos crear el yaml que use esta img.
+
+probar que la img funciona:
+
+docker run -d -p 80:80 --name nginx edison954/nginx:v1
+
+docker ps
+
+localhost                       --> debe salir el texto: "Ejemplo de POD con KUBERNETES y YAML"
+
+docker stop nginx                       --> para el contenedor
+
+
+kubectl create -f nginx.yaml                           --> permite crear un recurso a partir de un fichero yaml
+
+kubectl get pods
+
+kubectl delete pod/nginx1
+
+kubectl create -f nginx.yaml
+
+kubectl logs nginx1
+
+kubectl describe pod/nginx1
+
+-----------
+
+Generar la configuracion de un POD en JSON o en YAML
+
+
+
+kubectl get pod/nginx1 -o yaml                      --> -o permite generar la info en los dos tipos como yml o como json
+
+
+kubectl get pod/nginx1 -o yaml > f1.yaml               --> guardarlo como fichero f1.yaml
+
+kubectl get pod/nginx1 -o json > f1.json
 
 
 
