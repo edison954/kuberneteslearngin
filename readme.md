@@ -415,6 +415,45 @@ kubectl get pod/nginx1 -o yaml > f1.yaml               --> guardarlo como ficher
 
 kubectl get pod/nginx1 -o json > f1.json
 
+minikube dashboard
+
+
+crear otro pod en base al anterior:
+
+cp nginx.yaml nginx1.yaml
+
+
+kubectl create -f nginx.yaml 
+
+
+Borrar pods:
+
+kubectl get pods
+
+kubectl delete pod/hello-minikube-6ddfcc9757-wknqr
+
+kubectl delete pod nginx, pod1, pod2,...    --> borrar varios
+
+kubectl delete pod apache --grace-period=5   --> espera 5 segundos para eliminar el pod
+intenta borrarlo una vez termine todos los procesos
+
+kubectl delete pod apache --now        --> borrelo inmediatamente
+
+kubectl delete pods --all                 --> Ojo con este comando, es muy peligroso jeje
+
+--all    (siempre que un comando es con una palabra es con dos guiones)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
