@@ -444,6 +444,109 @@ kubectl delete pods --all                 --> Ojo con este comando, es muy pelig
 --all    (siempre que un comando es con una palabra es con dos guiones)
 
 
+Crear pod con multiples contenedores
+------------------------
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-django
+  labels:
+    app: web
+spec:
+  containers:
+    - name: almacen
+      image: redis
+      ports:
+        - containerPort: 6379
+    - name: frontal
+      image: django
+      ports:
+        - containerPort: 8000
+
+```
+
+kubectl create -f multi.yaml 
+
+kubectl describe pod/redis-django
+
+tener en cuenta que todos los containers que hay dentro de un pod comparten la misma direccion ip.
+
+kubectl logs pod/redis-django -c almacen        --> -c para indicar el contenedor
+
+
+comando apply
+---------------
+
+poder crear/modificar el recurso con un solo comando
+
+kubectl apply -f nginx.yaml             --> crea el pod
+
+vi nginx.yaml
+
+kubectl apply -f nginx.yaml              --> pod/nginx configured
+
+
+politica de rebote :  restartPolicy: Always  (por defecto)
+------------------
+- Always
+
+- OnFailure                              --> solo si ha fallado
+
+- Never                                   --> no restart
+
+:Alway
+
+kubectl apply -f restart-always.yaml
+
+kubectl get pods
+
+kubectl describe pod tomcat
+
+kubectl delete pod tomcat
+
+
+:OnFailure
+
+kubectl apply -f restart-onfailure.yaml
+
+kubectl get pods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+kubectl exec -it tomcat bash                    --> ingresar al container
+
+ps -ef
+
+catalina.sh stop                        --> para tomcat
+
+kubectl describe pod tomcat
+
+
+
+
+
+
+
+
+
+
+
 
 
 

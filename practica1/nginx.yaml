@@ -5,6 +5,7 @@ metadata:
   labels:
     zone: prod
     version: v1
+    otra: mi-etiqueta
 spec:
   containers:
    - name: nginx   
