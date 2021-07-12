@@ -292,6 +292,86 @@ http://127.0.0.1:8001/api/v1/namespaces/default/pods/apache
 
 http://127.0.0.1:8001/api/v1/namespaces/default/pods/apache/proxy/   --> verifaicar el pod
 
+-----------
+
+
+minikube ssh            --> conectarse a minikube
+
+uname -a
+
+todo lo que se va haciendo con kubernetes se esta escribiendo con el motor de contenedores que se esta trabajando.
+
+docker ps
+
+docker ps | grep apache
+
+
+Introduccion a YAML
+---------------------
+
+yaml --> fichero que tienen componentes de tipo clave valor
+
+```
+
+#Las cadenas no requieren comillas:
+Título: Introducción a YAML
+
+# Pero se pueden usar:
+title-w-quotes: 'Introducción a YAML'
+
+# Las cadenas multilínea comienzan con |
+ejecutar: |
+    npm ci
+    npm build
+    prueba npm
+
+#Secuencias
+#Las secuencias nos permiten definir listas en YAML:
+# Una lista de números usando guiones:
+números:
+    - uno
+    - dos
+    - Tres
+
+# La versión en línea:
+números: [uno, dos, tres]
+
+#Valores anidados
+#Podemos usar todos los tipos anteriores para crear un objeto con valores anidados, así:
+# Mil novecientos ochenta y cuatro datos nuevos.
+1984:
+    autor: George Orwell
+    publicado en: 1949-06-08
+    recuento de páginas: 328
+    descripción: |
+        Una novela, a menudo publicada como 1984, es una novela distópica del novelista inglés George Orwell.
+        Fue publicado en junio de 1949 por Secker & Warburg como noveno y último b de Orwell.
+
+
+#Lista de objetos
+#Combinando secuencias y valores anidados  podemos crear una lista de objetos.
+# Hagamos una lista de libros:
+- 1984:
+    autor: George Orwell
+    publicado en: 1949-06-08
+    recuento de páginas: 328
+    descripción: |
+        Una novela, a menudo publicada como 1984, es una novela distópica del novelista inglés George Orwell.
+
+- el Hobbit:
+    autor: J. R. R. Tolkien
+    publicado en: 1937-09-21
+    recuento de páginas: 310
+    descripción: |
+        The Hobbit, o There and Back Again es una novela de fantasía para niños del autor inglés J. R. R.
+
+```
+
+
+
+
+
+
 
 
 
