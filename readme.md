@@ -523,7 +523,7 @@ catalina.sh stop                        --> para tomcat
 kubectl describe pod tomcat
 
 
-Labels 
+Labels  (63 caracteres)
 ------------------------
 
 ```
@@ -613,17 +613,40 @@ kubectl get pods --show-labels -l 'estado notin(desarrollo,testing)'
 kubectl delete pods -l estado=desarrollo     --> cualquier comando admite selectores
 
 
+Anotaciones
+---------------
+similares a los labels, clave/valor  sirve para comentarios, describir y documentar componentes
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat4
+  labels:
+    estado: "produccion"
+    responsable: "edison"
+  annotations:
+    doc: "Se debe compilar con gcc"
+    adjunto: "ejemplo de anotacion"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+```
+
+kubectl apply -f anotations/.
+
+kubectl get pod tomcat4
+
+kubectl describe pod tomcat4
+
+kubectl get pod tomcat4 -o jsonpath={.metadata.annotations}     --> -o jsonpath forma de buscar un elemento dentro del contenido en json
+
+
+
 
 
 
 ```
 
 ```
-
-
-
-
-
-
-
-
