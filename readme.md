@@ -514,21 +514,6 @@ kubectl apply -f restart-onfailure.yaml
 kubectl get pods
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 kubectl exec -it tomcat bash                    --> ingresar al container
 
 ps -ef
@@ -538,46 +523,51 @@ catalina.sh stop                        --> para tomcat
 kubectl describe pod tomcat
 
 
+Labels 
+------------------------
+
+```
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat
+  labels:
+    estado: "desarrollo"
+    responsable: "edison"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+
+```
+
+kubectl apply -f labels/tomcat.yaml
+
+kubectl get pods
+
+kubectl get pods -o wide
+
+kubectl get pod tomcat
+
+kubectl get pod tomcat -o wide
+
+kubectl get pod tomcat --show-labels
+
+kubectl get pod tomcat --show-labels -L estado      --> -L para que cree una nueva columna con los valores de la etiqueta
 
 
+kubectl get pod tomcat --show-labels -L estado,responsable
 
+añadir etiqueta:
 
+kubectl label pod tomcat fecha=2021-07-19
 
+kubectl get pod tomcat --show-labels -L estado,responsable,fecha
 
+Modificar etiqueta
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+kubectl label --overwrite pod/tomcat estado=test
 
 
 
