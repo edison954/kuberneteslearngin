@@ -569,6 +569,59 @@ Modificar etiqueta
 
 kubectl label --overwrite pod/tomcat estado=test
 
+Eliminar etiqueta
+
+kubectl label pod/tomcat responsable-       --> elimina la etiqueta responsable
+
+
+Selectors  (-l    o  --selector) (condiciones de tipo and)
+-------------
+condiciones para seleccionar objetos que tengan determinadas etiquetas
+
+kubectl apply -f labels/.
+
+kubectl get pods
+
+kubectl get pods --show-labels
+
+kubectl get pods --show-labels -l estado=desarrollo
+
+kubectl get pods --show-labels -l estado=testing
+
+kubectl get pods --show-labels -l estado=produccion
+
+kubectl get pods --show-labels -l estado==produccion    --> se puede poner = o ==
+
+Condiciones
+
+kubectl get pods --show-labels -l estado=desarrollo,responsable=juan
+
+kubectl get pods --show-labels -l responsable!=juan    --> todos donde el responsable no sea juan
+
+
+kubectl get pods --show-labels -l estado!=testing
+
+Conjuntos
+
+kubectl get pods --show-labels -l 'estado in(desarrollo)'
+
+kubectl get pods --show-labels -l 'estado in(desarrollo,testing)'     -->permite poner listas
+
+
+kubectl get pods --show-labels -l 'estado notin(desarrollo,testing)'
+
+kubectl delete pods -l estado=desarrollo     --> cualquier comando admite selectores
+
+
+
+
+
+```
+
+```
+
+
+
 
 
 
