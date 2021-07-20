@@ -1130,8 +1130,103 @@ kubectl rollout history deploy nginx-d --revision=1
 
 kubectl get rs
 
+Rollingupdate
+------------------
+
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+        maxUnavailable: 1          --> nunca bajes de (replicas-1)
+        maxSurge: 1                --> nunca seas superior de (replicas+1)
+  minReadySeconds: 2            --> minimo de segundos que pasa para crear un pod (lo hace mas lento en este caso c/2segs)
 
 
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+  labels:
+    estado: "1"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 10 # indica al controlador que ejecute 2 pods
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
+  minReadySeconds: 2
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.16.1
+        ports:
+        - containerPort: 80
+```
+
+crear servicio:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  labels:
+     app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 31000
+    protocol: TCP
+  selector:
+     app: nginx
+```
+
+kubectl apply -f nginx-svc.yaml
+
+kubectl describe svc nginx-svc
+
+kubectl apply -f deploy_nginx2.yaml
+
+kubectl get pods
+
+kubectl get rs
+
+kubectl describe svc nginx-svc
+
+kubectl rollout history deploy nginx-d
+
+kubectl rollout history deploy nginx-d --revision=2
+
+kubectl describe svc nginx-svc
+
+Rolling back
+----------------
+
+kubectl rollout status deploy nginx-d     --> verificar el estado
+
+kubectl rollout history deploy nginx-d
+
+kubectl rollout history deploy nginx-d --revision=2
+
+kubectl rollout undo deployment nginx-d --to-revision=1     --> volver a poner la v1
+
+kubectl get pods
+
+kubectl rollout status deploy nginx-d
+
+kubectl rollout history deploy nginx-d
+
+kubectl rollout history deploy nginx-d --revision=3
 
 ```
 
