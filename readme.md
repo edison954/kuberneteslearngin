@@ -643,6 +643,65 @@ kubectl describe pod tomcat4
 kubectl get pod tomcat4 -o jsonpath={.metadata.annotations}     --> -o jsonpath forma de buscar un elemento dentro del contenido en json
 
 
+Deployments
+-------------
+
+Workloads y controllers
+
+workloads: lo que se esta utilizando para desplegar contenedores (ej los pods)
+
+- deployment: envuelven a los pods y les dan caracteristicas (updates, rolbacks, comprobacion)
+
+- replicatset: (subir o bajar los pods de acuerdo a lo que el cluster tenga indicado)(replication controllers)
+
+- stateful set: (gestiona el desplieuge y escalado, garantiza el orden)
+
+- daemon set: (asegura que todos los nodos del cluster van a tener una copia de un pod)
+
+- job: (crea uno o varios pods y se aseguran que terminen satisfactoriamente)
+
+- cron job: (parecido al job per se hace con planificacion/scheduler)
+
+
+Controllers: siempre consultan sobre el estado de los componentes en el cluster y los intentan dejar segun su definciion.
+
+
+Deployment
+---------------
+
+objeto inicial que puedo obtener en k8s es un contenedor..
+este no se puede solo luego hay que ponerlo dentro de un Pod
+
+pods por si solo no escalan, 
+
+no se recuperan ante caidas.
+
+no son buenos para updates y rollbacks
+
+para solucionar esto, se usa el deployment (engloba las propiedades que permiten update y rolbacks adecuados, recuperarse ante caidas y escalar)
+
+cuando se crea un deployment automaticamente se crea el replicaset.
+
+Replicaset: son los encargados de hacer las replicas y de gestionar la recuperacion ante caidas (componente)
+
+siempre estan normalmente dentro del deployment.
+
+kubectl get deploy
+
+kubectl get rs
+
+
+en modo imperativo:
+
+kubectl create deployment apache --image=httpd
+
+kubectl get deploy
+
+kubectl get rs
+
+
+
+
 
 
 
