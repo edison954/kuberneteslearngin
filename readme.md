@@ -939,6 +939,198 @@ kubectl top pods
 
 kubectl describe node 
 
+Servicios
+----------------------
+componentes que permiten que nuestas apps se conecten con el mundo exterior
+
+interactura entre el cliente y el deployment
+
+ofrece: 
+ - ip fija
+ - nombre fijo
+ - puerto fijo
+
+tipos de servicio
+------------
+
+- ClusterIP
+  
+  para que el pod solo sea accedido dentro del cluster
+  ofrece ip, nombre y puerto
+
+- NodePort
+
+  accesible desde fuera del cluster
+  ofrece Ip, nombre, puerto y nodeport
+
+- LoadBalancer
+
+  accesible desde fuera del cluster
+  integrado con loadbalancers de terceros
+  aws, google cloud, azure
+
+cd servicios
+
+docker build -t edison954/web .
+
+docker images
+
+docker run -d -p 80:80 edison954/web
+
+docker ps
+
+docker stop a5149f1e2fce
+
+docker login
+
+docker push edison954/web
+
+verificar que la imagen este subida al regestry https://hub.docker.com/
+
+crear deploy
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: web-d
+  labels:
+    estado: "1"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: web
+  replicas: 2 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: apache
+        image: edison954/web:latest
+        ports:
+        - containerPort: 80
+```
+
+kubectl apply -f deploy_web.yaml
+
+kubectl get deploy
+
+kubectl get rs
+
+kubectl get pods
+
+kubectl exec -it web-d-55bfc5c788-vpc4s bash      --> ingresar al pod para probar
+
+ps -ef
+
+apt-get install curl
+
+curl localhost
+
+exit 
+
+/// el problema es que si ingresamos desde el navegador localhost no funciona.
+por lo que no se puede acceder desde afuera al deployment.
+
+crearlo de modo imperativo y de modo declarativo
+
+kubectl expose deployment web-d --name=web-svc --target-port=80 --type=NodePort
+
+kubectl get svc
+
+kubectl describe svc web-svc
+
+minikube ip
+
+kubectl get node -o wide
+
+kubectl delete svc web-svc
+
+crear servicio de forma declarativa
+-----------
+
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  labels:
+     app: web
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 30002
+    protocol: TCP
+  selector:
+     app: web
+```
+
+kubectl apply -f web-svc.yaml
+
+kubectl get svc
+
+revisar en el navegador con la ip del nodo (internal-ip) + el puerto expuesto en el servicio 30002
+
+kubectl get node -o wide
+
+kubectl describe svc web-svc
+
+Rolling updates  (modificar aplicaciones)
+-------------------
+(destruir y recrear los pods en las actualizaciones)
+  strategy:
+     type: RollingUpdate
+
+- RollingUpdate: va modificando los pods de manera evolutiva para que siempre haya un pod que este dando servicio.
+
+- Recreate: directamente borra los pods y substituye creando las replicas.
+
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+  labels:
+    estado: "1"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 10 # indica al controlador que ejecute 2 pods
+  strategy:
+     type: RollingUpdate
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+```
+
+cd rolling/
+
+kubectl apply -f deploy_nginx_ori.yaml
+
+kubectl get pods
+
+kubectl describe deploy nginx-d
+
+kubectl rollout history deploy nginx-d    --> ver el historico de desplieuges
+
+kubectl rollout history deploy nginx-d --revision=1
+
+kubectl get rs
+
+
 
 
 ```
