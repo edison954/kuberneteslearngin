@@ -803,8 +803,141 @@ kubectl get rs
 
 kubectl get deploy nginx-d -o yaml    --para generarlo si no se tiene el archivo
 
+escalar un deployment
+-------------
+
+kubectl get deploy
+
+kubectl scale deploy nginx-d --replicas=5
+
+kubectl get pod
+
+kubectl get rs
+
+esclar de acuerdo a un label:
+
+vi deployments/deploy_nginx.yaml
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+  labels:
+    estado: "1"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 3 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+
+```
+
+kubectl apply -f deployments/deploy_nginx.yaml
+
+kubectl scale deploy -l estado=1 --replicas=10
+
+kubectl get deploy
+
+kubectl get pod
+
+kubectl scale deploy -l estado=1 --replicas=2
+
+Configurar la memoria de un deployment
+-----------------
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+  labels:
+    estado: "1"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 5 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+              memory: "200Mi"
+          requests:
+              memory: "100Mi" 
+```
+
+kubectl apply -f deployments/deploy_nginx.yaml
+
+kubectl edit deploy nginx-d
+
+Configurar la cpu de un pod
+-----------------
+
+preguntar como andamos de recursos:
+
+kubectl describe node
+
+kubectl decribe nodes
 
 
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+  labels:
+    estado: "1"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 2 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+              memory: "200mi"
+              cpu: "1"
+          requests:
+              memory: "100mi" 
+              cpu: "0.5"
+
+```
+
+kubectl apply -f deployments/deploy_nginx.yaml
+
+kubectl top node
+
+kubectl top pods
+
+kubectl describe node 
 
 
 
