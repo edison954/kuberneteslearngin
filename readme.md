@@ -699,7 +699,109 @@ kubectl get deploy
 
 kubectl get rs
 
+kubectl describe deploy apache
 
+pod template: que caracteristicas quiero que tengan los pods asociados al deploy
+
+kubectl get deploy apache -o yaml
+
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 2 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+```
+
+kubectl apply -f deployments/deploy_nginx.yaml
+
+kubectl get pods
+
+kubectl get deploy
+
+kubectl get rs
+
+kubectl get rs -o wide
+
+kubectl get deploy -o wide
+
+kubectl get pods -o wide
+
+selector (conjunto de etiquedas por los cuales se puede buscar un objeto)
+
+kubectl get pods -l app=nginx
+
+kubectl get pods -L app     --> mapear a columna app
+
+kubectl get pods -l app=nginx -L app
+
+kubectl get deploy,pods,rs    --> permite ver distintos tipos de objetos de una
+
+kubectl get deploy,pods,rs -l app=nginx -L app 
+
+Comando EDIT
+----------
+
+kubectl describe deploy nginx-d
+
+vi deployments/deploy_nginx.yaml    --> modificar y poner tres replicas->
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: nginx-d
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: nginx
+  replicas: 3 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+```
+
+kubectl apply -f deployments/deploy_nginx.yaml
+
+kubectl get deploy
+
+kubectl get pod
+
+kubectl get rs
+
+la otra forma de editar:    (sin necesidad de tener el yaml original)
+
+kubectl edit deploy nginx-d     --> abre el editor del deploy en vi y permite editar 
+
+kubectl get deploy
+
+kubectl get pod
+
+kubectl get rs
+
+kubectl get deploy nginx-d -o yaml    --para generarlo si no se tiene el archivo
 
 
 
