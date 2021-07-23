@@ -1276,10 +1276,325 @@ env         --> ver las variables de entorno
 
 env | grep NGINX
 
+----------
 
 
+kubectl get svc
 
+kubectl describe svc nginx-svc
 
+kubectl get pods
+
+kubectl exec -it nginx-d-5d59d67564-d5g4h bash
+
+env
+
+env | grep NGINX
+
+```
+root@nginx-d-5d59d67564-d5g4h:/# env | grep NGINX
+NGINX_SVC_PORT=tcp://10.106.235.125:80
+NGINX_SVC_PORT_80_TCP_PORT=80
+NGINX_SVC_PORT_80_TCP_PROTO=tcp
+NGINX_SVC_SERVICE_HOST=10.106.235.125
+NGINX_VERSION=1.7.9-1~wheezy
+NGINX_SVC_SERVICE_PORT=80
+NGINX_SVC_PORT_80_TCP_ADDR=10.106.235.125
+NGINX_SVC_PORT_80_TCP=tcp://10.106.235.125:80
+```
+
+kubectl describe svc nginx-svc    -->coinciden los datos con los del contenedor (env)
+
+Ejemplo app php-redis
+----------------
+
+cd php_app
+
+vi redis-master.yaml
+
+```
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+        tier: backend
+    spec:
+      containers:
+      - name: master
+        image: k8s.gcr.io/redis:e2e  # or just image: redis
+        ports:
+        - containerPort: 6379
+```
+
+kubectl apply -f redis-master.yaml
+
+kubectl get pods
+
+kubectl get deploy
+
+kubectl get rs
+
+kubectl get all -l app=redis      -->(muestra los tres elementos, pod,deploy y rs)
+
+Crear el servicio
+------------------
+
+vi redis-master-service.yaml
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+    role: master
+    tier: backend
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+    role: master
+    tier: backend
+
+```
+
+kubectl apply -f redis-master-service.yaml
+
+kubectl get svc
+
+kubectl describe svc redis-master
+
+comprobar que el servicio este funcionando:
+
+kubectl get pods
+
+kubectl exec -it redis-master-84777845f-8h9p4 bash
+
+uname -a
+
+cat /etc/hosts
+
+ping redis-master
+
+nombre-namespace-tipo-cluster.local
+
+redis-master.default.svc.cluster.local
+
+wget redis-master
+
+nslookup    --preguntar por una direccion
+
+nslookup redis-master
+
+apt-get update
+
+apt-get install bind-utils    --> instalar el nslookup
+
+apt-get install dnsutils 
+
+nslookup redis-master     --> ver la ip dns del servicio (estando dentro del contenedor)
+
+muestra lo siguient
+```
+Server:		10.96.0.10
+Address:	10.96.0.10#53
+
+Name:	redis-master.default.svc.cluster.local
+Address: 10.102.12.31
+```
+
+cat /etc/resolv.conf      --> para ver el servidor dns de la maquina actual  (este archivo es el que traduce el dns a la ip correspondiente)
+
+---- Crear los esclavos
+
+vi redis-slave.yaml
+
+```
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: slave
+      tier: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: slave
+        tier: backend
+    spec:
+      containers:
+      - name: slave
+        image: gcr.io/google_samples/gb-redisslave:v3
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+
+```
+kubectl apply -f redis-slave.yaml
+
+crear el servicio del redis sclavo
+
+vi redis-slave-service.yaml
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+    role: slave
+    tier: backend
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: redis
+    role: slave
+    tier: backend
+```
+
+kubectl apply -f redis-slave-service.yaml
+
+kubectl get svc
+
+kubectl describe svc redis-slave
+
+probarlo.
+
+kubectl get pods
+
+kubectl exec -it redis-master-84777845f-8h9p4 bash
+
+nslookup redis-slave
+
+```
+Server:		10.96.0.10
+Address:	10.96.0.10#53
+
+Name:	redis-slave.default.svc.cluster.local
+Address: 10.99.2.2
+```
+
+nslookup redis-master
+
+Creacion Frontend
+-----
+
+vi frontend.yaml
+
+```
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+spec:
+  selector:
+    matchLabels:
+      app: guestbook
+      tier: frontend
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google-samples/gb-frontend:v4
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+```
+
+kubectl apply -f frontend.yaml
+
+kubectl get pods
+
+kubectl get all -l app=guestbook
+
+Crear el servicio frontend
+-----
+
+vi frontend-service.yaml
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:  
+  type: NodePort 
+  #type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: guestbook
+    tier: frontend
+
+```
+
+kubectl apply -f frontend-service.yaml
+
+kubectl get svc
+
+kubectl  describe svc frontend
+
+probar el servicio
+
+minikube ip
+
+(usar ip y puerto del nodeport)
+
+kubectl get pods
+
+kubectl exec -it redis-master-84777845f-8h9p4 bash
+
+nslookup frontend
+
+kubectl get all -l app=redis
+
+kubectl get all -l app=guestbook
+
+kubectl get all   (pods,deployment,servicios,resplicaset)
+
+kubectl apply -f .
+
+-------------------
+Namespaces
+-------------------
+-------------------
 
 
 
