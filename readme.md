@@ -1596,8 +1596,130 @@ Namespaces
 -------------------
 -------------------
 
+division logica para agrupar los objetos dentro del cluster
 
+
+kubectl get namespace
+
+vienen por defecto:
+
+|NAME                   |STATUS   |AGE
+|-----------------------|---------|-----
+|default                |Active   |28d
+|kube-node-lease        |Active   |28d
+|kube-public            |Active   |28d
+|kube-system            |Active   |28d
+|kubernetes-dashboard   |Active   |28d
+
+
+kubectl get namespace default
+
+kubectl describe namespace default
+
+
+ver los elementos de un namespace
+
+kubectl get pods -n kube-system
+
+
+Crear y borrar namespaces
+------------------
+
+- crearlo de forma imperactiva:
+
+kubectl create namespace n1
+
+kubectl get namespace
+
+kubectl describe namespace n1
+
+kubectl get pods -n n1
+
+- crearlo de forma declarativa
 
 ```
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev1
+  labels:
+     tipo: desarrollo
 
 ```
+kubectl apply -f namespace.yaml
+
+kubectl get namespace
+
+kubectl describe namespace dev1
+
+kubectl delete namespace n1
+
+kubectl get namespaces
+
+
+(permite tener distintos objetos dentro del cluster que se llamen igual)
+
+
+Crear objetos en un namespace
+----------------------
+
+vi deploy_elasitc.yaml
+
+```
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: elastic
+  labels:
+    tipo: "desarrollo"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: elastic
+  replicas: 2 # indica al controlador que ejecute 2 pods
+  strategy:
+     type: RollingUpdate
+  minReadySeconds: 2
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: elastic
+    spec:
+      containers:
+      - name: elastic
+        image: elasticsearch:7.6.0
+        ports:
+        - containerPort: 9200
+```
+
+
+kubectl apply -f deploy_elasitc.yaml --namespace=dev1
+
+
+kubectl get deploy elastic -n dev1
+
+kubectl get deploy pod -n dev1
+
+kubectl describe deploy elastic -n dev1
+
+kubectl get rs -n dev1
+
+kubectl get pods -n dev1
+
+kubectl rollout history deploy elastic -n dev1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
