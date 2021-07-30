@@ -1708,15 +1708,91 @@ kubectl get pods -n dev1
 
 kubectl rollout history deploy elastic -n dev1
 
+-------------------------
 
 
+Configurar namespace por defecto
 
+abrir el config en el directorio .kube
 
+~ ls -la
+cd .kube
+ls
+cat config
 
+se podria buscar la seccion y configurar: current-context y namespace 
 
+```
+- context:
+    cluster: minikube
+    extensions:
+    - extension:
+        last-update: Fri, 23 Jul 2021 16:40:34 -05
+        provider: minikube.sigs.k8s.io
+        version: v1.21.0
+      name: context_info
+    namespace: default
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+```
 
+con kubectl:
 
+kubectl config view
 
+kubectl config set-context --current --namespace=dev1
+
+kubectl get rs    --> en este caso no es necesario poner el namespace (-n), ingresa al defecto dev1.
+
+------------------
+
+Poner CPU y Memoria a los namespaces
+-------------------
+nuevo kind limitrange
+
+````
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: recursos
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+      cpu: 1
+    defaultRequest:
+      memory: 256Mi
+      cpu: 0.5
+    max:
+      memory: 1Gi
+      cpu: 4
+    min:
+      memory: 128Mi
+      cpu: 0.5
+    type: Container
+```
+
+kubectl create namespace n1
+
+kubectl get namespace n1
+
+kubectl describe namespace n1
+
+kubectl apply -f limites.yaml     ---> aqui un error porque se aplicarian al tablespaces por defecto no al namespace
+
+kubectl describe namespace n1   --> no quedaron aqui
+
+kubectl describe namespace dev1    --> quedaron aca
+
+kubectl apply -f limites.yaml -n n1
+
+kubectl get deploy -n n1
+
+kubectl get pods -n n1
+
+kubectl describe pod -n n1
 
 
 
