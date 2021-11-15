@@ -2385,8 +2385,63 @@ env
 
 
 <br>
-Sondas
+Sondas (liveness, readiness, startup)
 ----------------------------------------------------------------
+3 tipos de sondas por tipo de prueba que lanzan:
+
+
+- comando (echo, script)
+- httpget
+- socket
+
+pueden devolver:
+
+- success
+- failure
+- unknown
+
+-- 3 Tipos de comportamientos de las sondas:
+
+- Liveness (permiten conocer si nuestro contenedor esta funcionando) si no esta respondiendo k8s lo que hace es eliminarlo. y entra a operar la politica de restart
+- Readiness  (evalua si el contenedor esta listo para dar servicio es decir puede ser que el contenedor puede estar funcionando pero la app que hay dentro no.) quitan la ip del contenedor de la lista del servicio lo dejan innacesible, en el momento en el que la sonda vuelva a dar ok, el contenedor se vuelve a activar
+- Startup ( la aplicacion que hay dentro del contenedor esta bn, es excuyente con las otras dos, es decir primero se ejecuta la sonda de startup y luego si las otras) para cuando la aplicacion demora en arrancar. si no logra acceder, mata el contenedor y aplica la politica de rebote.
+
+
+<br>
+Sondas LIVENESS de tipo COMMAND
+----------------------------------------------------------------
+
+pod-sonda.yaml
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: sonda-liveness
+spec:
+  containers:
+  - name: pod-liveness
+    image: ubuntu
+    args:
+    - /bin/sh
+    - -c
+    - mkdir /tmp/prueba; sleep 30; rm -rf /tmp/prueba; sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - ls
+        - /tmp/prueba
+      initialDelaySeconds: 5
+      periodSeconds: 5
+```
+
+kubectl apply -f pod-sonda.yaml
+
+kubectl get pod
+
+kubectl describe pod sonda-liveness
+
 
 
 ddfdf
