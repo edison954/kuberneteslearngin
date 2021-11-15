@@ -2318,6 +2318,77 @@ echo $DATOS
 
 echo $DATOS | od -c     --> od es comando para ver en diferente formato el contenido de un archivo
 
+
+<br>
+Secrets declarativos
+----------------------------------------------------------------
+
+secreto1.yaml
+````
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secreto1
+type: Opaque
+data:
+  usuario1: dXN1MQ==
+  usu1-pass: cGFzc3dvcmQtdXN1MQ==
+````
+
+echo -n "usu1" | base64           --> para pasar un valor a base 64
+
+kubectl apply -f secreto1.yaml
+
+kubectl get secret secreto1 -o yaml 
+
+secreto2.yaml (tener en cuenta que no es data sino stringData)
+````
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secreto2
+type: Opaque
+stringData:
+  usuario2: 'usu2'
+  usu2-pass: 'password-usu2'
+
+````
+
+kubectl apply -f secreto2.yaml
+
+uso pod1.yaml (envFrom)
+````
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+    - name: test-container
+      image: ubuntu
+      command: [ "/bin/sh", "-c", "sleep 1000000" ]
+      envFrom:
+        - secretRef:
+              name: secreto1
+        - secretRef:
+              name: secreto2
+  restartPolicy: Never
+````
+
+kubectl apply -f pod1.yaml
+
+kubectl get pods
+
+kubectl exec -it pod1 bash
+
+env
+
+
+<br>
+Sondas
+----------------------------------------------------------------
+
+
 ddfdf
 
 ```
