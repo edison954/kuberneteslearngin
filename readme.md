@@ -1752,7 +1752,7 @@ Poner CPU y Memoria a los namespaces
 -------------------
 nuevo kind limitrange
 
-````
+```
 apiVersion: v1
 kind: LimitRange
 metadata:
@@ -1812,10 +1812,104 @@ https://kubernetes.io/docs/setup/production-environment/tools/
 
 
 1. configurar la maquina
+--------------------
+
+
+
+<br /><br />
+
+
+Variables
+-----------------
+- configmaps
+  - tipos de config maps
+    - secrets
+
+
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: var-ejemplo
+  labels:
+    app: variables 
+spec:
+  containers:
+  - name: contenedor-variables
+    image: gcr.io/google-samples/node-hello:1.0
+    env:
+    - name: NOMBRE
+      value: "CURSO DE KUBERNETES"
+    - name: PROPIETARIO
+      value: "Apasoft Training"
+
+```
+
+kubectl apply -f var1.yaml
+
+kubectl get pod
+
+kubectl exec -it var-ejemplo bash
+
+printenv            ---> commando de linkux permite ver las varibales incluidas las del yaml anterior
+
+echo $PROPIETARIO
+echo $NOMBRE
+
+
+<br>
+
+Configurando MYSQL
+----------------------------------------------------------------
+
+
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deploy
+  labels:
+    app: mysql
+    type: db
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: mysql
+      type: db
+  template:
+    metadata:
+      labels:
+        app: mysql
+        type: db
+    spec:
+      containers:
+        - name: mysql57
+          image: mysql:5.7
+          ports:
+            - containerPort: 3306
+              name: db-port
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: kubernetes
+            - name: MYSQL_USER
+              value: usudb
+            - name: MYSQL_PASSWORD
+              value: usupass
+            - name: MYSQL_DATABASE
+              value: kubernetes
+```
 
 
 
 
+ddfdf
+
+```
+khgjg 
+```
 
 
 
