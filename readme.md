@@ -2545,9 +2545,81 @@ spec:
             periodSeconds: 5
 ````
 
+<br>
+RBAC ROL BASE ACCESS CONTROL Seguridad en el cluster
+----------------------------------------------------------------
 
+- no existe un kubectl create user
+- la gestion de usuarios se realiza de forma externa
+- algunas opciones son
+    - certificados
+    - tokens
+    - basic authentication
+    - oauth2
+- un rol es un objeto que tiene permisos a nivel de namespace
+- los roles son acumulativos y positivos (es decir no hay un denny)
 
+kubectl create namespace ventas
 
+kubectl get roles -n default
+
+kubectl get roles -n kube-system
+
+kubectl describe role kube-proxy -n kube-system
+
+kubectl describe role system:controller:cloud-provider -n kube-system
+
+Crear roles:
+
+rol.yaml
+````
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: ventas
+  name: operador
+rules:
+- apiGroups: [""] 
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+````
+
+recordar api_groups
+
+kubectl api-resources
+
+kubectl apply -f rol.yaml
+
+kubectl get roles -n ventas
+
+kubectl describe role operador -n ventas
+
+kubectl config set-context --current --namespace=ventas
+
+kubectl get roles
+
+Clusterrole
+
+kubectl describe clusterrole system:node
+
+cluster-role.yaml
+````
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: desarrollo
+rules:
+- apiGroups: [""]
+  resources: ["secrets","configmaps"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["create", "watch", "list","get","edit"]
+````
+
+kubectl apply -f cluster-role.yaml
+
+kubectl describe clusterrole desarrollo
 
 ddfdf
 
