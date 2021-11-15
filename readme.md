@@ -2170,6 +2170,98 @@ kubectl get pod
 <br>
 Secrets
 ----------------------------------------------------------------
+configmap protegido / encriptado
+
+
+forma mas sencilla:
+
+kubectl create secret generic passwords --from-literal=pass-root=kubernetes --from-literal=pass-usu=kubernetes
+
+kubectl get secrets
+
+kubectl get secret passwords -o yaml
+
+se puede conbinar secrets y Configmaps
+
+datos-mysql-env.yaml
+````
+apiVersion: v1
+data:
+  MYSQL_DATABASE: kubernetes
+  MYSQL_USER: usudb
+kind: ConfigMap
+metadata:
+  name: datos-mysql-env
+  namespace: default
+
+````
+
+kubectl apply -f datos-mysql-env.yaml
+
+kubectl get cm
+
+kubectl get secret
+
+
+usarlos:
+
+mysql.yaml
+````
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deploy
+  labels:
+    app: mysql
+    type: db
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: mysql
+      type: db
+  template:
+    metadata:
+      labels:
+        app: mysql
+        type: db
+    spec:
+      containers:
+        - name: mysql57
+          image: mysql:5.7
+          ports:
+            - containerPort: 3306
+              name: db-port
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: pass-root
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: passwords
+                  key: pass-usu
+
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: datos-mysql-env
+                  key: MYSQL_USER
+            
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: datos-mysql-env
+                  key: MYSQL_DATABASE
+````
+
+kubctl apply -f mysql.yaml 
+
+kubctl get pods
+
 
 
 
