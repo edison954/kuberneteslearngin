@@ -1951,6 +1951,47 @@ kubectl get cm cf1 -o yaml
 Configmaps desde archivos
 ----------------------------------------------------------------
 
+Datos: datos_mysql.properties
+````
+MYSQL_ROOT_PASSWORD=kubernetes
+MYSQL_USER=usudb
+MYSQL_PASSWORD=usupass
+MYSQL_DATABASE=kubernetes
+````
+
+Pod:
+````
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google-samples/node-hello:1.0
+      env:
+        # Define the environment variable
+        - name: DATOS_MYSQL
+          valueFrom:
+            configMapKeyRef:
+              name: datos-mysql
+              key: datos_mysql.properties
+  restartPolicy: Never
+````
+
+
+kubectl create configmap datos-myslq --from-file datos_mysql.properties
+
+kubctl get cm
+
+kubectl describe cm datos-mysql
+
+
+<br>
+Cargar variables con configmaps
+----------------------------------------------------------------
+
+
 
 
 
