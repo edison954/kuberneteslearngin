@@ -1795,6 +1795,28 @@ kubectl get pods -n n1
 kubectl describe pod -n n1
 
 
+--------------------
+Crear un cluster Real con Kubeadm con maquinas virtuales
+--------------------
+
+
+poder crear y usar con 3 nodos por ejemplo (minikube no lo permite)
+
+un maestro y dos esclavos
+
+ej: 2.5GB de memoria
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+https://kubernetes.io/docs/setup/production-environment/tools/
+
+
+1. configurar la maquina
+
+
+
+
+
 
 
 
