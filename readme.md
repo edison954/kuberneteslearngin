@@ -2442,6 +2442,78 @@ kubectl get pod
 
 kubectl describe pod sonda-liveness
 
+<br>
+Sondas LIVENESS de tipo HTTP
+----------------------------------------------------------------
+
+dockerfile:
+
+````
+##Descargamos una versión concreta de APACHE, a través del tag
+FROM httpd:2.4
+COPY ./web/ /usr/local/apache2/htdocs/
+##Exponemos el Puerto 80
+EXPOSE 80
+````
+
+docker build -t edison/sonda-web .
+
+docker image list
+
+sudo docker push edison/sonda-web
+
+ver deploy:
+
+````
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: web-d
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: web
+  replicas: 1 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web-d-777b977ff9
+        image: edison/sonda-web:latest
+        ports:
+        - containerPort: 80
+        livenessProbe:
+            httpGet:
+                path: /sonda.html
+                port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
+````
+
+
+kubectl apply -f .
+
+kubectl get pods
+
+kubectl get rs
+
+kubectl get deploy
+
+kubectl get svc
+
+
+hacer que falle el pod
+
+kubectl exec -it web-e2323233232-23323 bash
+
+rm sonda.html
+
+
+
+
+
 
 
 ddfdf
