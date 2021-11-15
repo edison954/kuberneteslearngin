@@ -12,7 +12,7 @@ ir a: https://minikube.sigs.k8s.io/docs/start/
 
 minikube status
 
-minikube starxt
+minikube start
 
 kubectl get po -A
 
@@ -1862,7 +1862,7 @@ echo $NOMBRE
 
 Configurando MYSQL
 ----------------------------------------------------------------
-
+usando las variables dentro del contenedor
 
 
 ```
@@ -1901,6 +1901,55 @@ spec:
             - name: MYSQL_DATABASE
               value: kubernetes
 ```
+
+kubectl apply -f mysql.yaml
+
+kubectl get pods
+
+kubectl exec -it  mysql-3233 bash
+
+printenv
+
+mysql -u usudb -p kubernetes
+pwd: usupass
+
+show databases
+
+show tables
+
+<br>
+
+Configmaps
+----------------------------------------------------------------
+
+cuando el numero de variables se vuelve muy grande (se complica meterlas en los env)
+
+fichero adicional para mantener los datos y del cual se pueden leer los datos.
+
+propiedad / valor
+
+
+Se puede crear tambien con el comando imperativo create
+
+```
+kubectl create configmap cf1 --from-literal=usuario=usu1  --from-literal=password=pass1
+
+kubectl get cm
+
+kubectl describe cm cf1
+
+kubectl get cm cf1 -o yaml
+
+```
+
+-o yaml  config --->>> para ver como se  veria un objeto con formato yaml
+
+(configmaps no tiene spect y data dentro del yaml)
+
+<br>
+
+Configmaps desde archivos
+----------------------------------------------------------------
 
 
 
