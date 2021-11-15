@@ -2263,8 +2263,60 @@ kubctl apply -f mysql.yaml
 kubctl get pods
 
 
+<br>
+Secrets y ficheros
+----------------------------------------------------------------
 
+datos.txt
+````
+Esto es un ejemplo de secrets
+incorporaos desde fichero
+dentro de un contenedor
 
+````
+
+kubectl create secret generic datos --from-file=datos.txt 
+
+kubectl get secret
+
+kubectl describe datos
+
+kubectl get secret datos -o yaml
+
+usar el secrets
+
+pod1.yaml
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+    - name: test-container
+      image: ubuntu
+      command: [ "/bin/sh", "-c", "sleep 1000000" ]
+      env:
+        - name: DATOS
+          valueFrom:
+            secretKeyRef:
+              name: datos
+              key: datos.txt
+  restartPolicy: Never
+```
+
+kubectl apply -f pod1.yaml 
+
+kubectl get pods
+
+kubectl exec -it pod1 bash 
+
+env
+
+echo $DATOS
+
+echo $DATOS | od -c     --> od es comando para ver en diferente formato el contenido de un archivo
 
 ddfdf
 
