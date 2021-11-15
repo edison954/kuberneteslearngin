@@ -1992,6 +1992,185 @@ Cargar variables con configmaps
 ----------------------------------------------------------------
 
 
+kubectl create configmap datos-mysql-env --from-env-file datos_mysql.properties
+
+kubectl get cm
+
+kubectl describe cm datos-mysql-env
+
+kubectl get cm datos-mysql-env -o yaml
+
+probarlo:
+
+pod1.yaml
+````
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google-samples/node-hello:1.0
+      envFrom:
+      - configMapRef:
+          name: datos-mysql-env
+  restartPolicy: Never
+````
+
+kubctl apply -f pod1.yaml 
+kubectl get pods
+
+kubectl exec -it pod1 bash
+
+env
+
+echo $MYSQL_USER
+
+<br>
+Configmap desde un archivo yaml
+----------------------------------------------------------------
+
+datos-mysql-env.yaml
+
+````
+apiVersion: v1
+data:
+  MYSQL_DATABASE: kubernetes
+  MYSQL_PASSWORD: usupass
+  MYSQL_ROOT_PASSWORD: kubernetes
+  MYSQL_USER: usudb
+kind: ConfigMap
+metadata:
+  name: datos-mysql-env
+  namespace: default
+````
+
+kubectl apply -f datos-mysql-env.yaml
+kubectl get cm
+
+usar configmap:
+
+mysql.yaml
+````
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deploy
+  labels:
+    app: mysql
+    type: db
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: mysql
+      type: db
+  template:
+    metadata:
+      labels:
+        app: mysql
+        type: db
+    spec:
+      containers:
+        - name: mysql57
+          image: mysql:5.7
+          ports:
+            - containerPort: 3306
+              name: db-port
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: datos-mysql-env
+                  key: MYSQL_ROOT_PASSWORD
+
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: datos-mysql-env
+                  key: MYSQL_USER
+            
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: datos-mysql-env
+                  key: MYSQL_DATABASE
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: datos-mysql-env
+                  key: MYSQL_PASSWORD
+````
+
+kubectl apply -f mysql.yaml
+
+kubectl get deploy
+
+kubectl get rs
+
+kubectl get pod
+
+kubectl exec -it mysql-deploy-23232332-sasdasd bash
+
+env
+
+
+<br>
+Configmaps y volumenes
+----------------------------------------------------------------
+
+configmap.yaml
+````
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-volumen
+  namespace: default
+data:
+  ENTORNO: "desarrollo"
+  VERSION: "1.0"
+````
+
+uso:
+
+pod1.yaml
+
+````
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+    - name: contenedor1
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "sleep 1000000" ]
+      volumeMounts:
+      - name: volumen-config-map
+        mountPath: /etc/config-map
+  volumes:
+    - name: volumen-config-map
+      configMap:
+        name: config-volumen
+  restartPolicy: Never
+
+````
+
+kubectl apply -f .
+
+kubectl get cm
+
+kubectl describe cm config-volumen
+
+kubectl get pod
+
+
+<br>
+Secrets
+----------------------------------------------------------------
+
 
 
 
