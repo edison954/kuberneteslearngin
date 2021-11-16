@@ -2728,6 +2728,92 @@ minikube addons list
 kubectl get pods -n kube-system 
 
 
+kubectl create deployment apache --image=httpd
+
+kubectl get rs
+
+kubectl expose deployment apache --type=NodePort --port=80
+
+kubectl get svc apache 
+
+minikube ip
+
+
+Crear un recurso ingress  (con el controller de NGINx)
+
+ingress.yaml
+````
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+   name: ingress-apache
+   annotations:
+     nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+   rules:
+   - host: curso.prueba.com
+     http:
+       paths:
+       - path: /apache
+         backend:
+           serviceName: apache
+           servicePort: 80
+       - path: /nginx
+         backend:
+           serviceName: nginx
+           servicePort: 80
+
+````
+
+ kubectl apply -f ingress.yaml
+
+ kubectl get ingress
+
+ kubectl describe ingress-apache
+
+Añadir un nuevo servicio al Ingress
+
+kubectl create deployment nginx --image=nginx
+
+kubectl get deploy
+
+kubectl get rs
+
+kubectl get pods
+
+kubectl get csv
+
+kubectl expose deployment nginx --type=NodePort --port=80
+
+
+ingress.yaml
+ ````
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+   name: ingress-apache
+   annotations:
+     nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+   rules:
+   - host: curso.prueba.com
+     http:
+       paths:
+       - path: /apache
+         backend:
+           serviceName: apache
+           servicePort: 80
+       - path: /nginx
+         backend:
+           serviceName: nginx
+           servicePort: 80
+````
+
+kubectl apply -f ingress.yaml
+
+kubectl get ingress
+
+kubectl describe ingress-apache
 
 
 ddfdf
