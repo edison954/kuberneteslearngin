@@ -2674,6 +2674,61 @@ kubectl certificate approve desa1-firma
 kubectl get csr sammy-authentication -o jsonpath='{.status.certificate}' | base64 --decode > desa1.crt
 
 
+Crear el rolebinding
+
+````
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+   name: role-operador
+   namespace: ventas
+subjects:
+- kind: User
+  name: desa1 
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role 
+  name: operador 
+  apiGroup: rbac.authorization.k8s.io
+````
+
+Cluster role bindings 
+
+````
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+   name: cluster-role-ejemplo
+subjects:
+- kind: User
+  name: desa1 
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: desarrollo
+  apiGroup: rbac.authorization.k8s.io
+
+````
+
+<br>
+INGRESS
+----------------------------------------------------------------
+- es un componente que gestiona el acceso desde el exterior al cluster de k8s 
+- balancea el trafico entre los endpoints
+- iclementa encriptacion a traves de hhtps
+
+se instala mediante un controlador de un terceros
+
+añadir un plugin
+
+minikube addons enable ingress
+
+minikube addons list 
+
+kubectl get pods -n kube-system 
+
+
+
 
 ddfdf
 
