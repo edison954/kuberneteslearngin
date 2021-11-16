@@ -2621,6 +2621,60 @@ kubectl apply -f cluster-role.yaml
 
 kubectl describe clusterrole desarrollo
 
+
+RBAC configurar certificados
+----------------------------------------------------------------
+
+mkdir certs
+
+cd certs
+
+openssl genrsa -out desa1.key 4096
+
+cat desa1.key
+
+crear archivo desa1.csr.cnf
+
+````
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+[ dn ]
+CN = desa1
+O = desarrollo
+[ v3_ext ] authorityKeyIdentifier=keyid,issuer:always basicConstraints=CA:FALSE keyUsage=keyEncipherment,dataEncipherment extendedKeyUsage=serverAuth,clientAuth
+````
+
+openssl req -config desa1.csr.cnf -new -key desa1.key -nodes -out desa1.csr
+
+lo anteriro genera el archivo desa1.csr
+
+se crea la solicitud al cluster de
+soclicitud.txt
+```
+cat <<EOF | kubectl apply -f - apiVersion: certificates.k8s.io/v1beta1 kind: CertificateSigningRequest 
+metadata:
+  name: desa1-firma # nombre de la peticion spec:
+groups:
+- system:authenticated
+request: $(cat desa1.csr | base64 | tr -d '\n') usages:
+- digital signature
+- key encipherment
+- server auth
+- client auth
+EOF
+```
+
+kubectl get csr
+
+kubectl certificate approve desa1-firma
+
+kubectl get csr sammy-authentication -o jsonpath='{.status.certificate}' | base64 --decode > desa1.crt
+
+
+
 ddfdf
 
 ```
