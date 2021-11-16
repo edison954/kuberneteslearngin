@@ -2815,6 +2815,11 @@ kubectl get ingress
 
 kubectl describe ingress-apache
 
+controller ngingx
+
+https://github.com/kubernetes/ingress-nginx
+
+https://kubernetes.github.io/ingress-nginx/deploy/
 
 ddfdf
 
